@@ -13,3 +13,7 @@
 ---
 
 ![cartesi](https://drive.google.com/file/d/10Up_x21Ll8kjMkWyj9TRtO0dYPOMMuN8/view?usp=sharing)
+
+---
+
+[instructions for workshop2](https://github.com/jjhbk/learnweb3_workshops/blob/main/workshop2/instructions.MD)

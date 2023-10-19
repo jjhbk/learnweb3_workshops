@@ -2,7 +2,7 @@
 
 ## Intro to Cartesi - Workshop1
 
-Use these [_Instructions_]()
+Use these [_Instructions_](https://github.com/jjhbk/learnweb3_workshops/blob/main/workshop1/instructions.MD)
 
 ---
 
