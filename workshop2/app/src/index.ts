@@ -6,8 +6,10 @@ import { storageabi } from "./contracts";
 const rollup_server = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log("HTTP rollup_server url is " + rollup_server);
 const storage_address = getAddress(
-  "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d"
+  "0xf1a0B31f4647e4F403e420AD90E7a1fbb53c4f13"
 );
+//for goerli 0xf1a0B31f4647e4F403e420AD90E7a1fbb53c4f13
+// for localhost   "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d"
 async function handle_advance(data: any) {
   console.log("Received advance request data " + JSON.stringify(data));
   const payload = data["payload"];
