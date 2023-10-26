@@ -5,7 +5,7 @@
   "dependencies": {
     "ethers": "^6.8.0",
     "openapi-fetch": "^0.7",
-    "viem": "^1.16.6"
+    "viem": "^1.17.1"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -20,7 +20,7 @@
     "build": "run-s codegen compile",
     "codegen": "ts-node schema.ts",
     "compile": "tsc && esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node20",
-    "start": "ROLLUP_HTTP_SERVER_URL=\"http://127.0.0.1:5004\" ts-node src/index.ts"
+    "start": "ROLLUP_HTTP_SERVER_URL=\"http://127.0.0.1:8080/host-runner\" ts-node src/index.ts"
   },
   "keywords": [
     "cartesi"
