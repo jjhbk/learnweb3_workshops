@@ -1,4 +1,4 @@
-# This is series of 3 workshops
+# This is a series of 3 workshops
 
 ## Intro to Cartesi - Workshop1
 
@@ -7,6 +7,8 @@ Use these [_Instructions_](https://github.com/jjhbk/learnweb3_workshops/blob/mai
 ---
 
 ## Building a simple DApp with Cartesi - Workshop2
+
+Use these [_Instructions_](https://github.com/jjhbk/learnweb3_workshops/blob/main/workshop2/instructions.MD)
 
 ---
 
