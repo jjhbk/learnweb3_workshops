@@ -503,11 +503,34 @@ erc721_transfer = (
 add Asset methods
 
 ```typescript
-listAsset = (erc721: Address, token_id: number, amount: bigint) => {
+listAsset = (
+  account: Address,
+  erc721: Address,
+  token_id: number,
+  amount: bigint
+) => {
   if (amount < 0) {
     throw new Error("invalid listing amount must be greater than 0");
   }
-  this.listedAssets.set(String(erc721 + "id:" + token_id), amount);
+  const balance = this._balance_get(account);
+  const tokens = balance.erc721_get(erc721);
+  if (tokens === undefined) {
+    return new Error_out("Only the owner of the asset can list it for sale");
+  }
+  let owner = false;
+  for (const value of tokens) {
+    if (value === token_id) {
+      owner = true;
+      break;
+    }
+  }
+  if (!owner) {
+    return new Error_out("Only the owner of the asset can list it for sale");
+  }
+  Wallet.listedAssets.set(String(erc721 + "id:" + token_id), amount);
+  return new Notice(
+    `Listed asset ${erc721} with id ${token_id} for ${amount.toString()} `
+  );
 };
 
 buyAsset = (
@@ -733,9 +756,46 @@ class WithdrawERC721Route extends WalletRoute {
 add assets routes
 
 ```typescript
-class ListedAssetsRoute extends WalletRoute {}
+class GetListedAssetsRoute extends WalletRoute {
+  constructor(wallet: Wallet) {
+    super(wallet);
+  }
+  public execute = (request: any) => {
+    try {
+      const allAssets = this.wallet.listedAssets_get();
+      console.log("all listed assets are:", allAssets);
+      return new Report(JSON.stringify({ assets: Array.from(allAssets) }));
+    } catch (e) {
+      return new Error_out(String(e));
+    }
+  };
+}
 
-class BuyAssetsRoute extends WalletRoute {}
+class ListAssetRoute extends WalletRoute {
+  public execute = (request: any) => {
+    this.parse_request(request);
+    return this.wallet.buyAsset(
+      getAddress(this.msg_sender),
+      getAddress(this.request_args.to.toLowerCase()),
+      getAddress(this.request_args.erc721.toLowerCase()),
+      parseInt(this.request_args.token_id),
+      BigInt(this.request_args.amount)
+    );
+  };
+}
+
+class BuyAssetsRoute extends WalletRoute {
+  public execute = (request: any) => {
+    this.parse_request(request);
+    return this.wallet.buyAsset(
+      getAddress(this.msg_sender),
+      getAddress(this.request_args.to.toLowerCase()),
+      getAddress(this.request_args.erc721.toLowerCase()),
+      parseInt(this.request_args.token_id),
+      BigInt(this.request_args.amount)
+    );
+  };
+}
 ```
 
 add Balance Route
@@ -782,7 +842,8 @@ constructor(wallet: Wallet) {
     this.controllers.set("ether_transfer", new TransferEther(wallet));
     this.controllers.set("erc721_withdraw", new WithdrawERC721Route(wallet));
     this.controllers.set("erc721_transfer", new TransferERC721Route(wallet));
-    this.controllers.set("listAssets",new ListedAssetsRoute(wallet));
+    this.controllers.set("listAssets",new GetListedAssetsRoute(wallet));
+    this.controllers.set("list_asset", new ListAssetRoute(wallet));
     this.controllers.set("buy_asset",new BuyAssetsRoute(wallet));
   }
 set_rollup_address(rollup_address: string) {

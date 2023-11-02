@@ -14,4 +14,8 @@ Use these [_Instructions_](https://github.com/jjhbk/learnweb3_workshops/blob/mai
 
 ## Building an NFT marketplace with Cartesi - Workshop3
 
+Use these [_Instructions_](https://github.com/jjhbk/learnweb3_workshops/blob/main/workshop3/instructions.MD)
+
+---
+
 ![Cartesi](https://ibb.co/vvhx3kD)

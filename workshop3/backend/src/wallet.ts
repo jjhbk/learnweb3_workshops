@@ -7,7 +7,7 @@ import {
   hexToBytes,
   parseEther,
 } from "viem";
-import { CartesiDappABI, erc721ABI } from "./rollups";
+import { CartesiDappABI, erc721ABI, BasicNFTABI } from "./rollups";
 import { ethers } from "ethers";
 
 class Wallet {
@@ -240,11 +240,34 @@ class Wallet {
     }
   };
 
-  listAsset = (erc721: Address, token_id: number, amount: bigint) => {
+  listAsset = (
+    account: Address,
+    erc721: Address,
+    token_id: number,
+    amount: bigint
+  ) => {
     if (amount < 0) {
       throw new Error("invalid listing amount must be greater than 0");
     }
+    const balance = this._balance_get(account);
+    const tokens = balance.erc721_get(erc721);
+    if (tokens === undefined) {
+      return new Error_out("Only the owner of the asset can list it for sale");
+    }
+    let owner = false;
+    for (const value of tokens) {
+      if (value === token_id) {
+        owner = true;
+        break;
+      }
+    }
+    if (!owner) {
+      return new Error_out("Only the owner of the asset can list it for sale");
+    }
     Wallet.listedAssets.set(String(erc721 + "id:" + token_id), amount);
+    return new Notice(
+      `Listed asset ${erc721} with id ${token_id} for ${amount.toString()} `
+    );
   };
 
   buyAsset = (

@@ -120,18 +120,34 @@ class WithdrawERC721Route extends WalletRoute {
     );
   };
 }
-class ListedAssetsRoute extends WalletRoute {
+class GetListedAssetsRoute extends WalletRoute {
   constructor(wallet: Wallet) {
     super(wallet);
   }
   public execute = (request: any) => {
     try {
       const allAssets = this.wallet.listedAssets_get();
+      const assetmap = new Map();
+      for (let [key, value] of allAssets) {
+        assetmap.set(key, value.toString());
+      }
       console.log("all listed assets are:", allAssets);
-      return new Report(JSON.stringify({ assets: Array.from(allAssets) }));
+      return new Report(JSON.stringify({ assets: Array.from(assetmap) }));
     } catch (e) {
       return new Error_out(String(e));
     }
+  };
+}
+
+class ListAssetRoute extends WalletRoute {
+  public execute = (request: any) => {
+    this.parse_request(request);
+    return this.wallet.listAsset(
+      getAddress(this.msg_sender),
+      getAddress(this.request_args.erc721.toLowerCase()),
+      parseInt(this.request_args.token_id),
+      BigInt(this.request_args.amount)
+    );
   };
 }
 
@@ -140,7 +156,7 @@ class BuyAssetsRoute extends WalletRoute {
     this.parse_request(request);
     return this.wallet.buyAsset(
       getAddress(this.msg_sender),
-      getAddress(this.request_args.to.toLowerCase()),
+      getAddress(this.request_args.from.toLowerCase()),
       getAddress(this.request_args.erc721.toLowerCase()),
       parseInt(this.request_args.token_id),
       BigInt(this.request_args.amount)
@@ -184,7 +200,8 @@ class Router {
     this.controllers.set("ether_transfer", new TransferEther(wallet));
     this.controllers.set("erc721_withdraw", new WithdrawERC721Route(wallet));
     this.controllers.set("erc721_transfer", new TransferERC721Route(wallet));
-    this.controllers.set("listAssets", new ListedAssetsRoute(wallet));
+    this.controllers.set("listassets", new GetListedAssetsRoute(wallet));
+    this.controllers.set("list_asset", new ListAssetRoute(wallet));
     this.controllers.set("buy_asset", new BuyAssetsRoute(wallet));
   }
   set_rollup_address(rollup_address: string) {
