@@ -1,18 +1,17 @@
 // XXX even though ethers is not used in the code below, it's very likely
 // it will be used by any DApp, so we are already including it here
-const { ethers } = require("ethers");
+import { ethers } from "ethers";
 import { encodeFunctionData, hexToString, getAddress, stringToHex } from "viem";
 import { storageabi } from "./contracts";
 
 const rollup_server = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log("HTTP rollup_server url is " + rollup_server);
 const storage_contract_address = getAddress(
-  "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d"
+  "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1"
 );
 let Storage_value = BigInt(0);
 //for goerli 0xf1a0B31f4647e4F403e420AD90E7a1fbb53c4f13
 // for localhost   "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d"
-
 async function handle_advance(data: any) {
   console.log("Received advance request data " + JSON.stringify(data));
   const payload = data.payload;
@@ -36,7 +35,7 @@ async function handle_advance(data: any) {
 
   if (JSONpayload.method === "store_value") {
     console.log("storing the new value");
-
+    Storage_value = BigInt(JSONpayload.value);
     const call = encodeFunctionData({
       abi: storageabi,
       functionName: "store",
